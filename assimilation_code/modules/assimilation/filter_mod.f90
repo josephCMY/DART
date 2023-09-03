@@ -830,11 +830,15 @@ AdvanceTime : do
    ! allocate() space for the prior qc copy
    call allocate_single_copy(obs_fwd_op_ens_handle, prior_qc_copy)
 
+   call trace_message('Before computing prior observation values ATTEMPT 1', 'filter:', -1)
+
    call get_obs_ens_distrib_state(state_ens_handle, obs_fwd_op_ens_handle, &
            qc_ens_handle, seq, keys, obs_val_index, input_qc_index, &
            OBS_ERR_VAR_COPY, OBS_VAL_COPY, OBS_KEY_COPY, OBS_GLOBAL_QC_COPY, &
            OBS_EXTRA_QC_COPY, OBS_MEAN_START, OBS_VAR_START, &
            isprior=.true., prior_qc_copy=prior_qc_copy)
+
+   call trace_message('After  computing prior observation values ATTEMPT 1', 'filter:', -1)
 
    call timestamp_message('After  computing prior observation values')
    call     trace_message('After  computing prior observation values')
@@ -876,6 +880,20 @@ AdvanceTime : do
    call trace_message('After  observation space diagnostics')
 
 
+
+   call trace_message('Before computing prior observation values ATTEMPT 2', 'filter:', -1)
+
+   call get_obs_ens_distrib_state(state_ens_handle, obs_fwd_op_ens_handle, &
+           qc_ens_handle, seq, keys, obs_val_index, input_qc_index, &
+           OBS_ERR_VAR_COPY, OBS_VAL_COPY, OBS_KEY_COPY, OBS_GLOBAL_QC_COPY, &
+           OBS_EXTRA_QC_COPY, OBS_MEAN_START, OBS_VAR_START, &
+           isprior=.false., prior_qc_copy=prior_qc_copy)
+
+   call trace_message('After  computing prior observation values ATTEMPT 2', 'filter:', -1)
+
+
+
+
    write(msgstring, '(A,I8,A)') 'Ready to assimilate up to', size(keys), ' observations'
    call trace_message(msgstring, 'filter:', -1)
 
@@ -891,6 +909,21 @@ AdvanceTime : do
 
    call timestamp_message('After  observation assimilation')
    call     trace_message('After  observation assimilation')
+
+
+
+   call trace_message('Before computing prior observation values ATTEMPT 3', 'filter:', -1)
+
+   call get_obs_ens_distrib_state(state_ens_handle, obs_fwd_op_ens_handle, &
+           qc_ens_handle, seq, keys, obs_val_index, input_qc_index, &
+           OBS_ERR_VAR_COPY, OBS_VAL_COPY, OBS_KEY_COPY, OBS_GLOBAL_QC_COPY, &
+           OBS_EXTRA_QC_COPY, OBS_MEAN_START, OBS_VAR_START, &
+           isprior=.false., prior_qc_copy=prior_qc_copy)
+
+   call trace_message('After  computing prior observation values ATTEMPT 3', 'filter:', -1)
+
+
+
 
    ! Already transformed, so compute mean and spread for state diag as needed
    call compute_copy_mean_sd(state_ens_handle, 1, ens_size, ENS_MEAN_COPY, ENS_SD_COPY)
