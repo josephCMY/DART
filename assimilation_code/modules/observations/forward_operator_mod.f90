@@ -15,7 +15,7 @@ use types_mod,             only : r8, i8, missing_r8
 
 use time_manager_mod,      only : time_type
 
-use utilities_mod,         only : error_handler, E_ERR
+use utilities_mod,         only : error_handler, E_ERR, E_MSG, E_MSG
 
 use mpi_utilities_mod,     only : my_task_id
 
@@ -103,6 +103,8 @@ integer :: num_copies_to_calc
 integer :: global_ens_index
 integer :: ens_size
 
+character(256) :: msg
+
 integer, allocatable  :: istatus(:)
 integer, allocatable  :: var_istatus(:)
 integer, allocatable  :: my_copy_indices(:) ! The global ens index for each copy a task has
@@ -118,11 +120,15 @@ type(obs_type)     :: observation
 ! It is also assumed that the ensemble members are in the same
 ! order in each of the handles
 
+call error_handler(E_MSG,' get_obs_ens_distrib_state:', 'starting up')
+
 num_copies_to_calc = copies_in_window(ens_handle)
 
 allocate(istatus(num_copies_to_calc))
 allocate(expected_obs(num_copies_to_calc))
 allocate(my_copy_indices(num_copies_to_calc))
+
+call error_handler(E_MSG,' get_obs_ens_distrib_state:', 'allocates done')
 
 istatus = 999123
 expected_obs = MISSING_R8
@@ -135,14 +141,23 @@ expected_obs = MISSING_R8
 ! Set up access to the state
 call create_state_window(ens_handle, obs_fwd_op_ens_handle, qc_ens_handle)
 
+call error_handler(E_MSG,' get_obs_ens_distrib_state:', 'state window created')
+
 ens_size = ens_handle%num_copies - ens_handle%num_extras
 
 if(get_allow_transpose(ens_handle)) then ! giant if for transpose or distributed forward op
+
+   call error_handler(E_MSG,' get_obs_ens_distrib_state:', 'transpose mode')
 
    my_copy_indices(:) = ens_handle%my_copies(1:num_copies_to_calc) ! var-complete forward operators
 
    ! Loop through all observations in the set
    ALL_OBSERVATIONS: do j = 1, obs_fwd_op_ens_handle%num_vars
+
+      write(msg,'(a,x,i)') 'handling obs',j
+      call error_handler(E_MSG,' get_obs_ens_distrib_state:', trim(msg))
+
+
       ! Get the information on this observation by placing it in temporary
       call get_obs_from_key(seq, keys(j), observation)
       call get_obs_def(observation, obs_def)
@@ -239,12 +254,17 @@ if(get_allow_transpose(ens_handle)) then ! giant if for transpose or distributed
 
 else ! distributed state
 
+   call error_handler(E_MSG,' get_obs_ens_distrib_state:', 'distributed mode')
+
    do i = 1, num_copies_to_calc
       my_copy_indices(i) = i  ! copy-complete fwd operator so indices are 1 to ens_size
    enddo
 
    ! Loop through all my observations in the set
    MY_OBSERVATIONS: do j = 1,  obs_fwd_op_ens_handle%my_num_vars
+
+   write(msg,'(a,x,i)') 'handling obs',j
+   call error_handler(E_MSG,' get_obs_ens_distrib_state:', trim(msg))
 
    ! convert the local obs number to global obs number
    global_obs_num = obs_fwd_op_ens_handle%my_vars(j) 
