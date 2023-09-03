@@ -240,8 +240,8 @@
 ! NIMBUS_6_THIR_RADIANCE,       QTY_RADIANCE
 ! NIMBUS_7_SMMR_TB,             QTY_BRIGHTNESS_TEMPERATURE
 ! NIMBUS_7_THIR_RADIANCE,       QTY_RADIANCE
-! HIMAWARI_8_AHI_RADIANCE,      QTY_RADIANCE
-! HIMAWARI_9_AHI_RADIANCE,      QTY_RADIANCE
+! HIMAWARI_8_AHI_RADIANCE,      QTY_BRIGHTNESS_TEMPERATURE
+! HIMAWARI_9_AHI_RADIANCE,      QTY_BRIGHTNESS_TEMPERATURE
 ! MTG_1_FCI_RADIANCE,           QTY_RADIANCE
 ! SARAL_1_ALTIKA_TB,            QTY_BRIGHTNESS_TEMPERATURE
 ! METOPSG_1_ICI_TB,             QTY_BRIGHTNESS_TEMPERATURE
@@ -2210,6 +2210,7 @@ DO imem = 1, ens_size
          end if
 
          ! depending on the vertical velocity and land type, classify clouds the way RTTOV wants 
+         runtime % profiles(imem) % cloud(:,:) = 0.0_jprb
          if (.not. is_cumulus) then
             ! stratus
             if (surftype == 0) then
@@ -2341,6 +2342,8 @@ DO imem = 1, ens_size
    if (allocated(atmos % wfetch)) then
       ! Wind fetch over the ocean (m)
       runtime % profiles(imem) % s2m % wfetc = atmos % wfetch(imem)  
+   else
+      runtime % profiles(imem) % s2m % wfetc = 100000.
    end if
    
    ! Surface type (0=land, 1=sea, 2=sea-ice)
