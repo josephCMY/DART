@@ -76,7 +76,9 @@ is as follows:
 +------------------------------------------------------------------------------------------------------+-------------------+-----------------------------------+
 | `Aviso <https://www.aviso.altimetry.fr/en/home.html>`__: satellite derived sea surface height        | Aviso             | netCDF                            |
 +------------------------------------------------------------------------------------------------------+-------------------+-----------------------------------+
-| Level 4 Flux Tower data from `AmeriFlux <http://ameriflux.lbl.gov/>`__                               | Ameriflux         | Comma-separated text              |
+| Level 4 Flux Tower data                                                                              | Ameriflux         | Comma-separated text              |
++------------------------------------------------------------------------------------------------------+-------------------+-----------------------------------+
+| Ameriflux Fullset Flux Tower data from `AmeriFlux <https://ameriflux.lbl.gov/data/download-data>`__  | Ameriflux         | Comma-separated text              |
 +------------------------------------------------------------------------------------------------------+-------------------+-----------------------------------+
 | Level 2 soil moisture from `COSMOS <http://cosmos.hwr.arizona.edu/>`__                               | COSMOS            | Fixed-width text                  |
 +------------------------------------------------------------------------------------------------------+-------------------+-----------------------------------+
@@ -103,6 +105,8 @@ is as follows:
 | Satellite winds from `SSEC <https://www.ssec.wisc.edu/data/>`__                                      | SSEC              | ASCII text                        |
 +------------------------------------------------------------------------------------------------------+-------------------+-----------------------------------+
 | Sea surface temperature                                                                              | SST               | netCDF                            |
++------------------------------------------------------------------------------------------------------+-------------------+-----------------------------------+
+| Solar-Induced Fluorescence                                                                           | SIF               | netCDF                            |
 +------------------------------------------------------------------------------------------------------+-------------------+-----------------------------------+
 | Special Sensor Ultraviolet Spectrographic Imager `(SSUSI) <https://ssusi.jhuapl.edu/>`__ retrievals  | SSUSI             | netCDF                            |
 +------------------------------------------------------------------------------------------------------+-------------------+-----------------------------------+
@@ -140,10 +144,9 @@ Data assimilation algorithms available in DART
 DART allows users to test the impact of using multiple different types of
 algorithms for filtering, inflation/deflation, and covariance localization.
 
-DART offers numerous **filter algorithms**. These determine how the posterior
-distribution is updated based on the observations and the prior ensemble. The
-following table lists the filters supported in DART along with their type (set
-by *filter_kind* in ``input.nml`` under the “assim_tools_nml” section):
+DART offers numerous **filter algorithms** in the :ref:`QCEFF`. These determine how the prior
+distribution is updated based on the observations. The
+following table lists the filters supported in DART.
 
 +--------------------+----------------------------+--------------------------------------------+
 | Filter #           | Filter Name                | References                                 |
